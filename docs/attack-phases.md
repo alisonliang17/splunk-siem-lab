@@ -1,6 +1,3 @@
-1
-
-2
 
 After a successful brute-force attack using Hydra, valid credentials (username and password)
 are obtained.
