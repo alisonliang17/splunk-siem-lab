@@ -1,35 +1,56 @@
+# Attack Phases & Post-Access Simulation
 
-After a successful brute-force attack using Hydra, valid credentials (username and password)
-are obtained.
-At this stage, the attacker is no longer exploiting access—they are authenticating legitimately
-using compromised credentials.
-Remote Desktop Login (RDP)
-From Kali Linux
-- Install RDP client:
+## Phase 2: Credential Access → Legitimate Login
+
+After a successful brute-force attack using Hydra, valid credentials are obtained.
+The attacker is no longer exploiting a vulnerability — they are authenticating
+legitimately using compromised credentials.
+
+> **MITRE ATT&CK: Valid Accounts (T1078)**
+
+---
+
+## RDP Remote Access from Kali Linux
+
+### Install RDP Client
+```bash
 sudo apt install xfreerdp
-- Connect to the victim machine:
+```
+
+### Connect to Victim Machine
+```bash
 xfreerdp /u:Administrator /p:'Password.1!!' /v:10.0.2.6
-Key Concept
-● Attack Phase Transition:
-○ Brute Force Credential Compromise Legitimate Access➜ ➜
-● This technique maps to:
-○ Valid Accounts (MITRE ATT&CK T1078)
-Post-Access Attack Simulation
-Once access is gained, attackers typically perform the following actions:
-1. Privilege Escalation
-● Gain higher-level permissions (e.g., SYSTEM access)
-2. Credential Dumping & Lateral Movement
-● Extract credentials and access other systems
-3. Persistence
-● Maintain long-term access (e.g., create new admin user)
-4. Data Exfiltration
-● Collect and transfer sensitive files
-5. Malware Simulation
-● Execute controlled payloads for testing detection
-6. Password Spraying
-● Attempt one password across multiple accounts
-Detection Opportunities (Splunk)
-● Successful RDP login after multiple failed attempts
-● Logon Type 10 (Remote Interactive)
-● New or unusual source IP address
-● Privileged account login activity
+```
+
+---
+
+## Attack Phase Transition
+
+Brute Force → Credential Compromise → Legitimate Access
+
+---
+
+## Post-Access Techniques
+
+| Phase | Technique | Description |
+|-------|-----------|-------------|
+| 1 | Privilege Escalation | Gain SYSTEM-level permissions |
+| 2 | Credential Dumping | Extract credentials for lateral movement |
+| 3 | Persistence | Create new admin account for long-term access |
+| 4 | Data Exfiltration | Collect and transfer sensitive files |
+| 5 | Malware Simulation | Execute controlled payloads to test detection |
+| 6 | Password Spraying | Try one password across multiple accounts |
+
+---
+
+## Splunk Detection Opportunities
+
+```spl
+index="main" sourcetype="WinEventLog:Security" EventCode=4624 Logon_Type=10
+```
+
+### What to Look For
+- Successful RDP login after multiple failed attempts
+- Logon Type 10 (Remote Interactive)
+- New or unusual source IP address
+- Privileged account login activity
