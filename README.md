@@ -1,7 +1,9 @@
 # 🔐 Splunk SIEM Security Lab
 
 ## 📌 Project Overview
-A hands-on cybersecurity lab that simulates real-world RDP brute force attacks and detects them in real-time using Splunk SIEM. This project demonstrates both offensive (Red Team) and defensive (Blue Team) security techniques.
+Designed and implemented a hands-on cybersecurity lab to simulate real-world attack scenarios and detect malicious activities using Splunk SIEM in real time.
+
+The lab includes multiple stages of the attack lifecycle, including brute force attempts, unauthorized remote access, and post-exploitation activities. It demonstrates both Red Team (offensive security) and Blue Team (defensive monitoring) techniques, showcasing the ability to build, attack, detect, and defend within a controlled environment.
 
 ## 🛠️ Tools & Technologies
 - Splunk Enterprise 9.4.3
