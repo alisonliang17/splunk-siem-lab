@@ -120,8 +120,6 @@ splunk-siem-lab/
 │   └── splunk_queries.md
 ├── defense/
 │   └── firewall_rules.md
-├── presentation/
-│   └── slides_link.md
 ├── LICENSE
 └── README.md
 ```
