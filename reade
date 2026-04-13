@@ -1,0 +1,150 @@
+# SOC Lab — Threat Detection Simulation
+
+![Lab Status](https://img.shields.io/badge/status-active-brightgreen)
+![Platform](https://img.shields.io/badge/platform-Kali%20Linux%20%7C%20Windows%20Server-blue)
+![SIEM](https://img.shields.io/badge/SIEM-Splunk-orange)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
+> An end-to-end SOC (Security Operations Center) simulation covering reconnaissance, attack execution, log collection, SIEM-based detection, and firewall-level defense — built on a 3-machine virtual lab environment.
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Lab Environment                       │
+│                                                             │
+│   ┌──────────────────┐        ┌──────────────────────────┐  │
+│   │  Kali Linux       │──────▶│  Windows Server (victim) │  │
+│   │  (Attacker)       │  RDP  │                          │  │
+│   │                   │       │  ┌──────────────────┐    │  │
+│   │  • NetDiscover    │       │  │ Universal         │    │  │
+│   │  • Nmap           │       │  │ Forwarder         │    │  │
+│   │  • Hydra          │       │  │ (port 9997)       │    │  │
+│   │  • xfreerdp       │       │  └────────┬─────────┘    │  │
+│   └──────────────────┘        └───────────┼──────────────┘  │
+│                                           │ logs             │
+│                                           ▼                  │
+│                               ┌──────────────────────────┐  │
+│                               │  Splunk Enterprise        │  │
+│                               │  (SIEM — Kali, 10.0.2.5) │  │
+│                               │                          │  │
+│                               │  • index=main            │  │
+│                               │  • SPL queries           │  │
+│                               │  • Dashboard             │  │
+│                               └──────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Workflow
+
+| Step | Phase | Tools / Actions |
+|------|-------|-----------------|
+| ① | **Recon** | NetDiscover (host discovery), Nmap (port & service scan) |
+| ② | **Attack** | Hydra (brute force), xfreerdp (RDP login attempts) |
+| ③ | **Log Generation** | Windows Security Event 4625, Universal Forwarder → Splunk |
+| ④ | **Detection** | SPL queries, Splunk dashboard (line / area / single value charts) |
+| ⑤ | **Defense** | Windows Firewall rule — block attacker IP |
+| ⑥ | **Documentation** | GitHub, slides, recorded walkthrough |
+
+---
+
+## Tech Stack
+
+- **Attacker**: Kali Linux — NetDiscover, Nmap, Hydra, xfreerdp
+- **Victim**: Windows Server — Splunk Universal Forwarder
+- **SIEM**: Splunk Enterprise (index: `main`, listening on port `9997`)
+- **Log source**: Windows Security Log (EventID 4625 — failed logon)
+
+---
+
+## Splunk Detection
+
+### Key SPL Queries
+
+**Failed login count over time:**
+```spl
+index=main EventCode=4625
+| timechart count by src_ip
+```
+
+**Top attacking IPs:**
+```spl
+index=main EventCode=4625
+| stats count by src_ip
+| sort - count
+```
+
+**Brute force threshold alert:**
+```spl
+index=main EventCode=4625
+| stats count by src_ip
+| where count > 10
+```
+
+### Dashboard
+> Screenshot will be added after dashboard completion.
+
+---
+
+## Defense — Firewall Rule
+
+After identifying the attacker IP in Splunk, a Windows Firewall inbound rule is created to block all traffic from `<ATTACKER_IP>`:
+
+```powershell
+New-NetFirewallRule -DisplayName "Block Attacker" `
+  -Direction Inbound `
+  -RemoteAddress <ATTACKER_IP> `
+  -Action Block
+```
+
+---
+
+## Repository Structure
+
+```
+soc-lab-simulation/
+├── README.md
+├── docs/
+│   ├── architecture.png
+│   └── dashboard.png
+├── recon/
+│   └── nmap_scan.txt
+├── attack/
+│   └── hydra_commands.md
+├── detection/
+│   └── splunk_queries.md
+├── defense/
+│   └── firewall_rules.md
+└── presentation/
+    └── slides_link.md
+```
+
+---
+
+## Team Roles
+
+| Member | Responsibility |
+|--------|---------------|
+| Attacker | Recon & attack execution (Kali) |
+| Defender | Splunk detection & firewall rule |
+| **You** | **Documentation, GitHub, slides** |
+
+---
+
+## Lessons Learned
+
+- Universal Forwarder silent install (`/quiet`) can cause credential lockout — use GUI installer instead
+- Splunk initialized-but-no-users state requires full reinstall via `.deb` package
+- EventID 4625 is the primary indicator for failed RDP brute force attempts
+
+---
+
+## References
+
+- [Splunk Universal Forwarder Docs](https://docs.splunk.com/Documentation/Forwarder)
+- [Nmap Reference Guide](https://nmap.org/book/man.html)
+- [MITRE ATT&CK — Brute Force T1110](https://attack.mitre.org/techniques/T1110/)
