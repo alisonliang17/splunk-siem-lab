@@ -10,38 +10,104 @@ The lab includes multiple stages of the attack lifecycle, including brute force 
 - Splunk Universal Forwarder 9.4.0
 - Kali Linux
 - Windows Server 2022
+- Netdiscover
+- Namap
 - Hydra
 - xfreerdp
-- Metasploit Framework
 - Windows Firewall
 
 ## ⚔️ Attacks Simulated
 
-### 1. RDP Brute Force (Hydra)
-Simulated brute force attack against Windows Server RDP using a custom password list.
-- Detection: EventCode 4625 Failed Login
+### 1. Reconnaissance — NetDiscover & Nmap
 
-### 2. Remote Desktop Takeover (xfreerdp)
-Gained full remote desktop access after cracking the password.
-- Detection: EventCode 4624 Successful Login
+Performed network reconnaissance to discover live hosts and identify open ports on the target machine.
 
-### 3. Metasploit Exploitation
-Further exploitation after initial access.
+```bash
+# Discover live hosts on the subnet
+netdiscover -r 10.0.2.0/24
 
-## 📊 Splunk Detection Queries
-index="main" sourcetype="WinEventLog:Security" EventCode=4625
-index="main" sourcetype="WinEventLog:Security" EventCode=4624
+# Scan target for open ports and services
+nmap -sV -p 3389 <TARGET_IP>
+```
+
+**Goal:** Confirm target IP and verify RDP port 3389 is open before launching the attack.
+
+---
+
+### 2. RDP Brute Force — Hydra
+
+Simulated a brute force attack against the Windows Server RDP service using a custom password list.
+
+```bash
+hydra -l Administrator -P /usr/share/wordlists/rockyou.txt rdp://<TARGET_IP>
+```
+
+**Detection:** `EventCode 4625` — Failed Logon
+
+---
+
+### 3. Remote Desktop Takeover — xfreerdp
+
+Gained full remote desktop access after successfully cracking the password.
+
+```bash
+xfreerdp /u:Administrator /p:<CRACKED_PASSWORD> /v:<TARGET_IP>
+```
+
+**Detection:** `EventCode 4624` — Successful Logon
+
+---
+
 
 ## 🔵 Blue Team Defense
-- Block attacking IP via Windows Firewall
-- Enable account lockout after 5 failed attempts
-- Real-time monitoring and automated alerts
+
+- **Block attacking IP** via Windows Firewall inbound rule
+- **Enable account lockout** after 5 failed login attempts
+- **Real-time monitoring** with Splunk dashboards
+- **Automated alerts** triggered on threshold breach
+
+```powershell
+# Block attacker IP via PowerShell
+New-NetFirewallRule -DisplayName "Block Attacker" `
+  -Direction Inbound `
+  -RemoteAddress <ATTACKER_IP> `
+  -Action Block
+```
+
+---
+
+## 📁 Repository Structure
+
+```
+splunk-siem-lab/
+├── README.md
+├── docs/
+│   ├── architecture.png        ← lab topology screenshot
+│   └── dashboard.png           ← Splunk dashboard screenshot
+├── attack/
+│   ├── hydra_commands.md       ← brute force commands (IPs redacted)
+│   └── metasploit_notes.md     ← exploitation steps
+├── detection/
+│   └── splunk_queries.md       ← all SPL queries used
+├── defense/
+│   └── firewall_rules.md       ← block rule configuration
+└── presentation/
+    └── slides_link.md          ← link to slide deck
+```
+
+---
 
 ## 🎯 Key Learnings
-- Built full SIEM environment from scratch
-- Simulated real-world attacks
-- Created real-time dashboards and alerts
-- Practiced Red Team and Blue Team techniques
+
+- Built a full SIEM environment from scratch including log forwarding pipeline
+- Simulated real-world attack techniques across the full kill chain
+- Created real-time Splunk dashboards and automated threshold alerts
+- Practiced both Red Team offensive techniques and Blue Team detection/response
+- Developed hands-on experience with EventID correlation (4625 → 4624 pattern)
+
+---
 
 ## ⚠️ Disclaimer
-Educational purposes only. All attacks performed in isolated virtual machine environment.
+
+> All attacks were performed in an **isolated virtual machine environment** for **educational purposes only**. No real systems were targeted. This project is intended to demonstrate SOC analyst skills in a controlled lab setting.
+
