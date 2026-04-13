@@ -108,19 +108,22 @@ New-NetFirewallRule -DisplayName "Block Attacker" `
 
 ```
 splunk-siem-lab/
-├── README.md
 ├── docs/
-│   ├── architecture.png        ← lab topology screenshot
-│   └── dashboard.png           ← Splunk dashboard screenshot
+│   ├── architecture.png
+│   └── dashboard.png
+├── recon/
+│   └── netdiscover_nmap.md
 ├── attack/
-│   ├── hydra_commands.md       ← brute force commands (IPs redacted)
-│   └── metasploit_notes.md     ← exploitation steps
+│   ├── hydra_commands.md
+│   └── xfreerdp_commands.md
 ├── detection/
-│   └── splunk_queries.md       ← all SPL queries used
+│   └── splunk_queries.md
 ├── defense/
-│   └── firewall_rules.md       ← block rule configuration
-└── presentation/
-    └── slides_link.md          ← link to slide deck
+│   └── firewall_rules.md
+├── presentation/
+│   └── slides_link.md
+├── LICENSE
+└── README.md
 ```
 
 ---
