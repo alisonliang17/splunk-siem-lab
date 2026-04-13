@@ -13,6 +13,7 @@ The lab includes multiple stages of the attack lifecycle, including brute force 
 - Hydra
 - xfreerdp
 - Metasploit Framework
+- Windows Firewall
 
 ## ⚔️ Attacks Simulated
 
