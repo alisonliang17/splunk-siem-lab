@@ -27,6 +27,8 @@ Command:
 netdiscover -r 10.0.x.0/24 -P
 ```
 
+arp_redacted2.png
+
 Purpose:
 
 * discover live hosts
