@@ -27,7 +27,8 @@ Command:
 netdiscover -r 10.0.x.0/24 -P
 ```
 
-arp_redacted2.png
+<img width="1511" height="292" alt="image" src="https://github.com/user-attachments/assets/05faeaba-ce49-4a0c-81ab-4e8fbb685ec4" />
+
 
 Purpose:
 
