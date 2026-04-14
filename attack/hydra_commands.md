@@ -83,6 +83,7 @@ hydra -l Administrator -P ~/passwords.txt -t 4 -V rdp://10.0.2.6
 ```
 
 ---
+<img width="1529" height="549" alt="image" src="https://github.com/user-attachments/assets/61af8dc8-9d98-4a8a-9f99-cb428fa6db5b" />
 
 ## Parameters
 
