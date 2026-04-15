@@ -3,6 +3,7 @@
 Queries used during the lab to detect a simulated RDP brute-force attack originating from the attacker machine targeting the Windows Server.
 
 ---
+<img width="857" height="470" alt="image" src="https://github.com/user-attachments/assets/643a4b75-238a-4f22-8ced-7adb831da1b4" />
 
 ## 1. Detect Failed Logon Attempts (Brute Force)
 
